@@ -1,3 +1,5 @@
+from .moons import Moons
+
 class Moons:
 	def __init__(self, data):
 		self.data = data
