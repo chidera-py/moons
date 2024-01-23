@@ -1,6 +1,7 @@
-#from .moons import Moons
 from typing import List
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class Moons:
 	def __init__(self, data):
@@ -80,13 +81,6 @@ class Moons:
 		else:
 			return "No data loaded. Call .load_data() method first"
 	
-    
-	def correlation_matrix(self):
-		if self.df is not None:
-			corr_matrix = self.df.corr()
-			return corr_matrix
-		else:
-			return "No data loaded. Call .load_data() method first"
 	
 	def extract_moons(self, moons: List[str]):
 		# extracts data for a specfic moon
@@ -135,5 +129,83 @@ class Moons:
 			return self.df.loc[rows, cols]
 		else:
 			return "No data loaded. Call .load_data() method first"
-	
-	
+	            
+	def plot_scatter(self, col_1, col_2):
+		if col_1 and col_2 in self.columns:
+			sns.relplot(data = self.df, x = col_1, y = col_2)
+			plt.xlabel(col_1)
+			plt.ylabel(col_2)
+			plt.title(f"{col_1} vs {col_2}")
+			plt.show()
+		else:
+			raise ValueError("Columns are not in df")
+			
+	def plot_hist(self, col_1):
+		#create a histogram 
+		if col_1 in self.columns:
+			sns.histplot(data = self.df, x = col_1, bins="auto", kde=True)
+			plt.xlabel(col_1)
+			plt.ylabel('Frequency')
+			plt.title(f'Histogram of {col_1}')
+			plt.show()
+		else:
+			raise ValueError(f"Column {col_1} are not in df")
+			
+	def plot_box(self, col_1):
+		#generate box plots 
+		if col_1 in self.columns: #checks col_1 is within df
+			sns.catplot(data = self.df, y = col_1, x = "group", kind = "box")
+		else:
+			raise ValueError("Column is not in df")
+		    
+	def plot_pair(self):
+		#View of all pairwise relationships
+		sns.pairplot(self.df)
+		
+	def plot_bar(self, col_1):
+		#Makes a bar plot       
+		if col_1 in self.columns: #checks col_1 is within df
+			sns.catplot(data = self.df, y = col_1, x = "group", kind = "bar")
+			plt.xlabel("Group")
+			plt.ylabel(col_1)
+			plt.title(f"Bar Chart of {col_1} by Group")
+			plt.show()
+		else:
+			raise ValueError(f"Column {col_1} is not in df")
+		
+	def convert_units(self, initial_col, new_col_name, new_units):
+		#converts vals from one col into a different unit and adds new column with converted values
+        
+		conversion_factors = {
+			'kilometers_to_metres': 1000,
+			' }      
+		if intital_col not in self.columns:
+			raise ValueError(f"Initial column '{initial_col}' not found in Df.")
+            
+		if new_units not in conversion_factors:
+			raise ValueError(f"Unsupported target unit: '{new_units}'.") 
+            
+		conversion_factor = conversion_factors[new_units]            
+		self.df[new_col_name] = self.df[intial_col] * conversion_factor
+            
+		
+	def raise_power(self, initial_col, new_col_name, power:int):
+		#raises an entire col to a specified power and adds new colum with raised values
+		if initial_col not in self.columns:
+			raise ValueError("Initial column '{initial_col}' not found in Df.")
+            
+		self.df[new_col_name] = self.df[intital_col] ** power
+    
+    
+	#def training(self, ):
+		
+	#def testng(self, ):
+		
+	#def predict(self, ):
+		
+	#def linear_regression(self, ):
+        
+        
+        
+                
+       
